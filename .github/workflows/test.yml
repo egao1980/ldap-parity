@@ -30,6 +30,8 @@ jobs:
       - uses: actions/checkout@v5
       - name: Start compose
         run: docker compose up --wait --wait-timeout 180
+      - name: Compose ready
+        run: docker compose ps
       - uses: egao1980/cl-repository/.github/actions/setup-lisp@main
         with:
           sbcl-version: ${{ env.SBCL_VERSION }}

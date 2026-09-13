@@ -1,6 +1,10 @@
 services:
   openldap:
     image: osixia/openldap:1.5.0
+    # --copy-service copies bind-mounted files to a writable tree so slapd
+    # startup can chown them. A :ro mount without this exits immediately:
+    # "chown: ... Read-only file system".
+    command: --copy-service
     ports:
       - "389:389"
     environment:
