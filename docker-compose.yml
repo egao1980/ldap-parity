@@ -1,23 +1,24 @@
 services:
   openldap:
-    image: osixia/openldap:1.5.0
-    # --copy-service copies bind-mounted files to a writable tree so slapd
-    # startup can chown them. A :ro mount without this exits immediately:
-    # "chown: ... Read-only file system".
-    command: --copy-service
+    # osixia/openldap:1.5.0 stays unhealthy: custom LDIF omitted the base
+    # (err=32) and env-only first-boot rejected cn=admin,dc=example,com
+    # (err=34). vegardit seeds the DIT from env and is multi-arch.
+    image: vegardit/openldap:2.6.10
     ports:
       - "389:389"
     environment:
-      LDAP_ORGANISATION: Example Inc
-      LDAP_DOMAIN: example.com
-      LDAP_ADMIN_PASSWORD: admin
-      LDAP_TLS: "false"
-      LDAP_RFC2307BIS_SCHEMA: "false"
-    volumes:
-      - ./fixtures/bootstrap.ldif:/container/service/slapd/assets/config/bootstrap/ldif/custom/01-bootstrap.ldif:ro
+      LDAP_INIT_ORG_DN: dc=example,dc=com
+      LDAP_INIT_ORG_NAME: Example Inc
+      LDAP_INIT_ROOT_USER_DN: cn=admin,dc=example,dc=com
+      LDAP_INIT_ROOT_USER_PW: admin
+      LDAP_TLS_ENABLED: "false"
     healthcheck:
-      test: ["CMD-SHELL", "ldapsearch -x -H ldap://127.0.0.1:389 -b dc=example,dc=com -s base >/dev/null"]
+      test:
+        [
+          "CMD-SHELL",
+          "ldapsearch -x -H ldap://127.0.0.1:389 -D cn=admin,dc=example,dc=com -w admin -b dc=example,dc=com -s base >/dev/null",
+        ]
       interval: 5s
       timeout: 5s
-      retries: 20
-      start_period: 15s
+      retries: 24
+      start_period: 30s
