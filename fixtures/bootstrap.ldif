@@ -1,0 +1,10 @@
+dn: ou=people,dc=example,dc=com
+objectClass: organizationalUnit
+ou: people
+
+dn: cn=alice,ou=people,dc=example,dc=com
+objectClass: inetOrgPerson
+cn: alice
+sn: Example
+mail: alice@example.com
+userPassword: s3cret

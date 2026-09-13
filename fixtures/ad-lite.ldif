@@ -1,0 +1,10 @@
+# Applied only if ad-lite.schema loaded. Canary skips when this entry is absent.
+
+dn: cn=ad-alice,ou=people,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: adLiteAccount
+cn: ad-alice
+sn: Directory
+sAMAccountName: alice
+userPrincipalName: alice@example.com
+userPassword: s3cret
