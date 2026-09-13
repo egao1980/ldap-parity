@@ -79,7 +79,7 @@
                (t (error 'ldap-protocol:ldap-protocol-error
                          :message (format nil "unexpected search PDU ~s"
                                           (getf msg :op)))))))
-         (let* ((ou (%env "LDAP_PARITY_PEOPLE" "ou=people,dc=example,dc=com"))
+         (let* ((ou (%env "LDAP_PARITY_PEOPLE" "dc=example,dc=com"))
                 (new-dn (format nil "cn=canary-~d,~a" (get-universal-time) ou))
                 (add (encode-ldap-add-request
                       :message-id (1+ (ldap-protocol::ldap-connection-message-id conn))

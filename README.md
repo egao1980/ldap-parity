@@ -15,7 +15,7 @@ ros -e '(asdf:test-system "ldap-parity")' -q
 Live:
 
 ```bash
-docker compose up -d
+docker compose up --wait
 ros -e '(asdf:test-system "ldap-parity")' -q
 ```
 
@@ -23,9 +23,11 @@ ros -e '(asdf:test-system "ldap-parity")' -q
 PARITY=0 ros -e '(asdf:test-system "ldap-parity")' -q
 ```
 
+Compose uses **`vegardit/openldap:2.6.10`** with env-only seed (`LDAP_INIT_ORG_DN=dc=example,dc=com`). osixia 1.5.0 stayed unhealthy in CI (missing base / invalid admin DN). The live canary binds as admin and adds its own `cn=canary-*` entry.
+
 ## Optional AD-schema fixture
 
-`fixtures/ad-lite.schema` + `fixtures/ad-lite.ldif` add `sAMAccountName` / `userPrincipalName`. They are **not** mounted by default (osixia schema bootstrap is brittle). Mount them yourself if you want the extra DIT; the AD Rove case **skips** when that attribute is absent.
+`fixtures/ad-lite.schema` + `fixtures/ad-lite.ldif` add `sAMAccountName` / `userPrincipalName`. They are **not** mounted by default. The AD Rove case **skips** when that attribute is absent. The bind/search/add canary writes `cn=canary-*` under `dc=example,dc=com` (override with `LDAP_PARITY_PEOPLE`).
 
 ## Env
 
@@ -44,7 +46,7 @@ PARITY=0 ros -e '(asdf:test-system "ldap-parity")' -q
 
 | Service | Image |
 |---------|--------|
-| OpenLDAP | `osixia/openldap:1.5.0` |
+| OpenLDAP | `vegardit/openldap:2.6.10` |
 
 ## License
 
